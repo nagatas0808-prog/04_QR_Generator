@@ -4,187 +4,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QRコード生成ツール PRO | URL・テキスト・Wi-Fi情報から即生成</title>
-    <meta name="description" content="URL・テキスト・Wi-Fi情報を入力するだけでQRコードを瞬時に生成＆ダウンロード。無料・登録不要のQRコードジェネレーター。">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>QRコード作成 - 便利ツール集</title>
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- QR Code Library -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         body {
-            background-color: #020617;
-            color: #f8fafc;
-            background-image:
-                radial-gradient(at 0% 0%, hsla(210, 40%, 10%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(200, 39%, 15%, 0.2) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(220, 49%, 15%, 0.2) 0, transparent 50%);
-            background-attachment: fixed;
+            background-color: #efefef;
+            color: #000000;
+            font-family: "MS PGothic", "MS Pゴシック", sans-serif;
+            margin: 20px;
         }
 
-        .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .container {
+            width: 750px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            padding: 15px;
         }
 
-        .gradient-text {
-            background: linear-gradient(to right, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1 {
+            color: #ffffff;
+            background-color: #0080c0;
+            padding: 5px;
+            font-size: 20px;
+            text-align: center;
+            margin: -15px -15px 15px -15px;
         }
 
-        .tab-active {
-            background: linear-gradient(to right, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.2));
-            border-color: rgba(56, 189, 248, 0.5);
+        table.layout {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .qr-container {
-            transition: transform 0.3s ease;
+        table.layout td {
+            border: 1px solid #cccccc;
+            padding: 10px;
         }
 
-        .qr-container:hover {
-            transform: scale(1.02);
+        .label {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            width: 150px;
+            font-size: 13px;
+        }
+
+        .tabs button {
+            margin-right: 5px;
+            padding: 2px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid #999;
+            background-color: #ddd;
+        }
+
+        .tabs button.active {
+            background-color: #fff;
+            border-bottom: 2px solid #fff;
+            font-weight: bold;
+            margin-bottom: -1px;
+            position: relative;
+            z-index: 10;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            border: 1px solid #999;
+            padding: 3px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .btn-gen {
+            background-color: #004080;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 8px 20px;
+            border: 2px outset #ffffff;
+            cursor: pointer;
+        }
+
+        .btn-gen:active {
+            border: 2px inset #ffffff;
+        }
+
+        .result-area {
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border: 1px inset #fff;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            border-top: 1px dotted #999999;
+            padding-top: 10px;
+        }
+
+        a {
+            color: #0000ff;
         }
     </style>
-    <!-- Google Search Console 所有権確認用メタタグ -->
-    <meta name="google-site-verification" content="nDfNlMk2wvPV-koGT7Ur1MandTe503qb1CQ0kJw6fdA" />
-    <!-- Google AdSense 審査・所有権確認用コード -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5383957100145583"
-        crossorigin="anonymous"></script>
 </head>
 
-<body class="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight"><span class="gradient-text">QR
-                    Code</span> PRO</h1>
-            <p class="text-slate-400 text-lg max-w-2xl mx-auto">URL・テキスト・Wi-Fi情報を入力するだけ。高品質QRコードを即生成＆ダウンロード。</p>
-        </div>
-
-        <div class="mb-10 text-center flex justify-center w-full min-h-[90px]">
-            <!-- ■■■ 広告タグ貼り付け位置（トップ） ■■■ -->
-        </div>
+<body>
+    <div class="container">
+        <h1>📲 QRコード作成 (QR Generator)</h1>
 
         <div id="root"></div>
 
-        <!-- --- SEO対策用の解説テキストエリア --- -->
-        <div class="mt-16 pt-12 border-t border-slate-800/80">
-            <section class="mb-12">
-                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white flex items-center">
-                    <span class="w-1.5 h-8 bg-sky-500 rounded-full mr-4 inline-block"></span>
-                    QR Code PRO とは？
-                </h2>
-                <div class="space-y-4 text-slate-300 leading-relaxed text-base">
-                    <p>
-                        「QR Code
-                        PRO」は、<strong>URL・テキスト・Wi-Fi接続情報などを入力するだけで、高品質なQRコード画像を瞬時に生成し、PNG形式でダウンロードできる完全無料のWebツール</strong>です。
-                    </p>
-                    <p>
-                        店舗の案内POPや名刺、チラシ、ポスター、イベント告知など、<strong>あらゆるビジネスシーンで活用できるQRコードを数秒で作成</strong>できます。サイズやカラーのカスタマイズにも対応しています。
-                    </p>
-                    <p>
-                        すべての処理はブラウザ内で完結するため、入力データがサーバーに送信されることはありません。個人情報を含むWi-Fiパスワードなども安心してご利用いただけます。
-                    </p>
-                </div>
-            </section>
-
-            <section class="mb-12">
-                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white flex items-center">
-                    <span class="w-1.5 h-8 bg-indigo-500 rounded-full mr-4 inline-block"></span>
-                    QRコードの活用シーン
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div
-                        class="bg-slate-800/40 rounded-xl p-6 border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
-                        <div
-                            class="w-12 h-12 bg-sky-500/20 text-sky-400 rounded-xl flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">WebサイトURL</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            自社サイト・ECショップ・SNSアカウントのURLをQRコードに変換。名刺やチラシに印刷して集客に活用できます。</p>
-                    </div>
-                    <div
-                        class="bg-slate-800/40 rounded-xl p-6 border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
-                        <div
-                            class="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-xl flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">Wi-Fi接続</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            ネットワーク名とパスワードを入力するだけで、スマホで読み取るとワンタップ接続できるWi-Fi用QRコードを生成。</p>
-                    </div>
-                    <div
-                        class="bg-slate-800/40 rounded-xl p-6 border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
-                        <div
-                            class="w-12 h-12 bg-violet-500/20 text-violet-400 rounded-xl flex items-center justify-center mb-4">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">テキスト・メッセージ</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            任意のテキストをQRコードに変換。イベントの受付番号、クーポンコード、メッセージカードなどに応用可能。</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="mb-4">
-                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white flex items-center">
-                    <span class="w-1.5 h-8 bg-violet-500 rounded-full mr-4 inline-block"></span>
-                    よくある質問（FAQ）
-                </h2>
-                <div class="bg-slate-800/30 rounded-xl border border-slate-700/50 p-6 md:p-8 space-y-6">
-                    <div>
-                        <h3 class="text-white font-semibold mb-2">Q. 生成したQRコードに有効期限はありますか？</h3>
-                        <p class="text-slate-400 text-sm">
-                            ありません。当ツールが生成するQRコードは「静的QRコード」であり、画像内にデータが直接埋め込まれています。ツールの存続に関わらず永久に機能します。</p>
-                    </div>
-                    <div>
-                        <h3 class="text-white font-semibold mb-2">Q. 印刷物（名刺・チラシ）にも使えますか？</h3>
-                        <p class="text-slate-400 text-sm">はい。サイズを大きめ（512px以上）に設定してダウンロードすれば、印刷物にも高品質で使用できます。</p>
-                    </div>
-                    <div>
-                        <h3 class="text-white font-semibold mb-2">Q. Wi-Fiの情報は安全ですか？</h3>
-                        <p class="text-slate-400 text-sm">
-                            はい。すべての処理はお使いのブラウザ内で完結しており、Wi-Fiのパスワードを含む入力データがサーバーに送信されることは一切ありません。</p>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <div class="mt-12 text-center flex justify-center w-full min-h-[250px]">
-            <!-- ■■■ 広告タグ貼り付け位置（ボトム） ■■■ -->
+        <div class="footer">
+            [ <a href="../00_Portal/index.html">便利ツール集ポータルへ戻る</a> ]
         </div>
     </div>
 
@@ -193,213 +131,54 @@
             const [mode, setMode] = React.useState('url');
             const [url, setUrl] = React.useState('');
             const [text, setText] = React.useState('');
-            const [wifiSSID, setWifiSSID] = React.useState('');
-            const [wifiPass, setWifiPass] = React.useState('');
-            const [wifiType, setWifiType] = React.useState('WPA');
-            const [qrSize, setQrSize] = React.useState(300);
-            const [fgColor, setFgColor] = React.useState('#000000');
-            const [bgColor, setBgColor] = React.useState('#ffffff');
             const [qrImage, setQrImage] = React.useState(null);
-            const [isGenerating, setIsGenerating] = React.useState(false);
-
-            const getQRData = () => {
-                switch (mode) {
-                    case 'url': return url;
-                    case 'text': return text;
-                    case 'wifi': return `WIFI:T:${wifiType};S:${wifiSSID};P:${wifiPass};;`;
-                    default: return '';
-                }
-            };
 
             const generate = async () => {
-                const data = getQRData();
-                if (!data.trim()) { alert('内容を入力してください'); return; }
-                setIsGenerating(true);
+                const data = mode === 'url' ? url : text;
+                if (!data.trim()) { alert('入力してください'); return; }
                 try {
-                    const dataUrl = await QRCode.toDataURL(data, {
-                        width: qrSize,
-                        margin: 2,
-                        color: { dark: fgColor, light: bgColor },
-                        errorCorrectionLevel: 'H'
-                    });
+                    const dataUrl = await QRCode.toDataURL(data, { width: 300, margin: 2 });
                     setQrImage(dataUrl);
                 } catch (err) {
-                    alert('QRコードの生成に失敗しました: ' + err.message);
+                    alert('失敗: ' + err.message);
                 }
-                setIsGenerating(false);
             };
-
-            const download = () => {
-                if (!qrImage) return;
-                const a = document.createElement('a');
-                a.href = qrImage;
-                a.download = `qrcode_${Date.now()}.png`;
-                a.click();
-            };
-
-            const tabs = [
-                { id: 'url', label: '🔗 URL', icon: '' },
-                { id: 'text', label: '📝 テキスト', icon: '' },
-                { id: 'wifi', label: '📶 Wi-Fi', icon: '' },
-            ];
 
             return (
-                <div className="space-y-8">
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                        {/* 左カラム：入力 */}
-                        <div className="md:col-span-7 space-y-6">
-                            <div className="glass rounded-2xl p-6 shadow-xl">
-                                {/* タブ */}
-                                <div className="flex gap-2 mb-6">
-                                    {tabs.map(t => (
-                                        <button
-                                            key={t.id}
-                                            onClick={() => { setMode(t.id); setQrImage(null); }}
-                                            className={`flex-1 py-2.5 px-3 rounded-lg text-sm font-medium border transition-all ${mode === t.id ? 'tab-active text-white border-sky-500/50' : 'border-slate-700 text-slate-400 hover:text-white hover:border-slate-500'}`}
-                                        >
-                                            {t.label}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* 入力フォーム */}
-                                <div className="space-y-4">
-                                    {mode === 'url' && (
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-300 mb-2">WebサイトのURL</label>
-                                            <input
-                                                type="url"
-                                                value={url}
-                                                onChange={(e) => setUrl(e.target.value)}
-                                                placeholder="https://example.com"
-                                                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                            />
-                                        </div>
-                                    )}
-                                    {mode === 'text' && (
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-300 mb-2">テキスト内容</label>
-                                            <textarea
-                                                value={text}
-                                                onChange={(e) => setText(e.target.value)}
-                                                placeholder="QRコードに埋め込むテキストを入力..."
-                                                className="w-full h-32 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-y"
-                                            ></textarea>
-                                        </div>
-                                    )}
-                                    {mode === 'wifi' && (
-                                        <>
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-300 mb-2">ネットワーク名（SSID）</label>
-                                                <input
-                                                    type="text"
-                                                    value={wifiSSID}
-                                                    onChange={(e) => setWifiSSID(e.target.value)}
-                                                    placeholder="MyWiFi-Network"
-                                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-300 mb-2">パスワード</label>
-                                                <input
-                                                    type="text"
-                                                    value={wifiPass}
-                                                    onChange={(e) => setWifiPass(e.target.value)}
-                                                    placeholder="password123"
-                                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-300 mb-2">暗号化方式</label>
-                                                <select
-                                                    value={wifiType}
-                                                    onChange={(e) => setWifiType(e.target.value)}
-                                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                >
-                                                    <option value="WPA">WPA/WPA2</option>
-                                                    <option value="WEP">WEP</option>
-                                                    <option value="nopass">暗号化なし</option>
-                                                </select>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-
-                                {/* カスタマイズ */}
-                                <div className="mt-6 pt-4 border-t border-slate-700/50">
-                                    <h3 className="text-sm font-medium text-slate-400 mb-3">カスタマイズ</h3>
-                                    <div className="grid grid-cols-3 gap-4">
-                                        <div>
-                                            <label className="block text-xs text-slate-500 mb-1">サイズ</label>
-                                            <select
-                                                value={qrSize}
-                                                onChange={(e) => setQrSize(Number(e.target.value))}
-                                                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
-                                            >
-                                                <option value={200}>200px</option>
-                                                <option value={300}>300px</option>
-                                                <option value={400}>400px</option>
-                                                <option value={512}>512px</option>
-                                                <option value={1024}>1024px</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs text-slate-500 mb-1">前景色</label>
-                                            <div className="flex items-center gap-2">
-                                                <input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-8 h-8 rounded" />
-                                                <span className="text-xs text-slate-400 font-mono">{fgColor}</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs text-slate-500 mb-1">背景色</label>
-                                            <div className="flex items-center gap-2">
-                                                <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-8 h-8 rounded" />
-                                                <span className="text-xs text-slate-400 font-mono">{bgColor}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={generate}
-                                    disabled={isGenerating}
-                                    className="w-full mt-6 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:shadow-sky-500/30 transition-all transform hover:-translate-y-0.5 disabled:opacity-50"
-                                >
-                                    {isGenerating ? '生成中...' : 'QRコードを生成する ⚡️'}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* 右カラム：QR表示 */}
-                        <div className="md:col-span-5">
-                            <div className="glass rounded-2xl p-6 shadow-xl h-full flex flex-col items-center justify-center">
-                                <h2 className="text-xl font-semibold mb-4 w-full flex items-center">
-                                    <svg className="w-5 h-5 mr-2 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                                    生成結果
-                                </h2>
-
-                                {!qrImage ? (
-                                    <div className="flex-grow flex items-center justify-center text-slate-500 flex-col text-center p-4">
-                                        <svg className="w-16 h-16 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                                        <p className="text-sm">左側でデータを入力し<br />「QRコードを生成する」を押してください</p>
-                                    </div>
-                                ) : (
-                                    <div className="qr-container flex flex-col items-center">
-                                        <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
-                                            <img src={qrImage} alt="Generated QR Code" className="max-w-full" style={{ imageRendering: 'pixelated' }} />
-                                        </div>
-                                        <button
-                                            onClick={download}
-                                            className="bg-slate-700 hover:bg-slate-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors flex items-center"
-                                        >
-                                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                            PNG でダウンロード
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                <div>
+                    <div class="tabs" style={{ marginBottom: '10px' }}>
+                        <button class={mode === 'url' ? 'active' : ''} onClick={() => setMode('url')}>URL変換</button>
+                        <button class={mode === 'text' ? 'active' : ''} onClick={() => setMode('text')}>テキスト変換</button>
                     </div>
+
+                    <table class="layout">
+                        <tr>
+                            <td class="label">{mode === 'url' ? 'サイトのURL' : 'テキスト'}</td>
+                            <td>
+                                {mode === 'url' ? (
+                                    <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="http://..." />
+                                ) : (
+                                    <textarea value={text} onChange={(e) => setText(e.target.value)} rows="3" placeholder="文章を入力..."></textarea>
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style={{ textAlign: 'center' }}>
+                                <button class="btn-gen" onClick={generate}>QRコードを生成！</button>
+                            </td>
+                        </tr>
+                    </table>
+
+                    {qrImage && (
+                        <div class="result-area" style={{ marginTop: '20px' }}>
+                            <div style={{ fontWeight: 'bold', marginBottom: '10px', fontSize: '14px' }}>生成されたQRコード</div>
+                            <img src={qrImage} style={{ border: '1px solid #ccc', backgroundColor: '#fff', padding: '10px' }} />
+                            <br /><br />
+                            <a href={qrImage} download="qrcode.png">
+                                <button style={{ cursor: 'pointer' }}>💾 画像を保存する</button>
+                            </a>
+                        </div>
+                    )}
                 </div>
             );
         };
@@ -407,10 +186,6 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-
-<!-- admax -->
-<script src="https://adm.shinobi.jp/s/5dfe8bfce49a43ffe78096b109972b5b"></script>
-<!-- admax -->
 </body>
 
 </html>
